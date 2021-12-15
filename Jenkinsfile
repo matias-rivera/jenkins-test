@@ -1,29 +1,9 @@
 pipeline {
-  agent none
+  agent any
   stages {
     stage('Fluffy Build') {
       parallel {
-        stage('Build Java 8') {
-          agent {
-            node {
-              label 'java8'
-            }
-          }
-          steps {
-            sh './jenkins/build.sh'
-          }
-          post {
-            success {
-              stash(name: 'Java 8', includes: 'target/**')
-            }
-          }
-        }
         stage('Build Java 7') {
-          agent {
-            node {
-              label 'java7'
-            }
-          }
           steps {
             sh './jenkins/build.sh'
           }
@@ -38,60 +18,6 @@ pipeline {
     }
     stage('Fluffy Test') {
       parallel {
-        stage('Backend Java 8') {
-          agent {
-            node {
-              label 'java8'
-            }
-          }
-          steps {
-            unstash 'Java 8'
-            sh './jenkins/test-backend.sh'
-          }
-          post {
-            always {
-              junit 'target/surefire-reports/**/TEST*.xml'
-            }
-          }
-        }
-        stage('Frontend Java 8') {
-          agent {
-            node {
-              label 'java8'
-            }
-          }
-          steps {
-            unstash 'Java 8'
-            sh './jenkins/test-frontend.sh'
-          }
-          post {
-            always {
-              junit 'target/test-results/**/TEST*.xml'
-            }
-          }
-        }
-        stage('Performance Java 8') {
-          agent {
-            node {
-              label 'java8'
-            }
-          }
-          steps {
-            unstash 'Java 8'
-            sh './jenkins/test-performance.sh'
-          }
-        }
-        stage('Static Java 8') {
-          agent {
-            node {
-              label 'java8'
-            }
-          }
-          steps {
-            unstash 'Java 8'
-            sh './jenkins/test-static.sh'
-          }
-        }
         stage('Backend Java 7') {
           agent {
             node {
