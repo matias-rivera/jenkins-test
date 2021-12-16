@@ -1,9 +1,10 @@
 pipeline {
   agent any
+  tools {
+    maven 'maven'
+  }
   stages {
     stage('Fluffy Build') {
-      parallel {
-        stage('Build Java 7') {
           steps {
             sh './jenkins/build.sh'
           }
@@ -13,8 +14,6 @@ pipeline {
               stash(name: 'Java 7', includes: 'target/**')
             }
           }
-        }
-      }
     }
     stage('Fluffy Test') {
       parallel {
